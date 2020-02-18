@@ -49,3 +49,15 @@ Check for a win from given state (row and col):
 (MAYBE???) Current state to be defined in full (current) sequence of the game in either 1 to 42 states or row and col (eg 1,1;4,2;7,1)
 <br>
 
+__________________________________________________
+
+18 Feb 2020
+
++ Look into OPEN AI GYM (advised by Dr Gianni)
+ - looks great but has some issues
+ - GYM has removed game board enviornments in the new version
+ - Also only available in python, which is fine but i will need to investigate sockets first
+
++ Look up state against frequency of actions used against it (advised by Dr Gianni)
+ - Looks like Partially Observable Markov's Decision Process (POMDP)
+ 
