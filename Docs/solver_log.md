@@ -60,4 +60,8 @@ __________________________________________________
 
 + Look up state against frequency of actions used against it (advised by Dr Gianni)
  - Looks like Partially Observable Markov's Decision Process (POMDP)
+ - A good article: https://towardsdatascience.com/function-approximation-in-reinforcement-learning-85a4864d566
+ - A good lecture: https://www.youtube.com/watch?v=1eWjhiIMXfw
+ - As I understand, I may need a Belief MDP
+ - A nice and simple analagy of Hidden MDP: https://www.youtube.com/watch?v=kqSzLo9fenk
  
