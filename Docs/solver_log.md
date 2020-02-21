@@ -65,3 +65,8 @@ __________________________________________________
  - As I understand, I may need a Belief MDP
  - A nice and simple analagy of Hidden MDP: https://www.youtube.com/watch?v=kqSzLo9fenk
  
+ 19 and 20 Feb 2020
+ 
+ - Deep Q Network / Learning (DQN), seems to answer the issue of large state space that none of the above has been able to so    far. 
+ - A good article for DQN: https://towardsdatascience.com/self-learning-ai-agents-part-ii-deep-q-learning-b5ac60c3f47
+ - Using tensorflow and keras: https://pythonprogramming.net/q-learning-analysis-reinforcement-learning-python-tutorial/?completed=/q-learning-algorithm-reinforcement-learning-python-tutorial/
