@@ -1,0 +1,2 @@
+Load graphs through Tensorboard
+tensorboard --logdir=<dir path>
