@@ -175,59 +175,74 @@ void RoboSocket::socketSendBackScreenWorker(){
     // boost::asio::ip::tcp::resolver::query query(hostname, portNum);
     // boost::asio::ip::tcp::resolver::query query(boost::asio::ip::tcp::v4(), hostname, portNum);
     // boost::asio::ip::tcp::resolver::query query(hostname, portNum,boost::asio::ip::resolver_query_base::flags());
-    boost::asio::ip::tcp::resolver::query query(hostname, portNum, boost::asio::ip::resolver_query_base::all_matching);
-    
-    boost::asio::ip::tcp::resolver::iterator iter = resolver.resolve(query);
-
-    boost::asio::ip::tcp::resolver::iterator end; // End marker.
-    while (iter != end){
-        boost::asio::ip::tcp::endpoint endpoint = *iter++;
-        // std::cout << "endpoint: " << endpoint << std::endl;
-    }
-
-    std::cout << "I WAS HERE" << std::endl;
-
-    boost::asio::ip::tcp::socket _socket_(io_backscreen_service);
-    bool connected_to_server = false;
-    while (!connected_to_server){
+    while (true){
         try{
-            boost::asio::connect(_socket_, resolver.resolve(query));
-            connected_to_server = true;
-            std::cout << "connection with " << hostname << "@" << portNum << " established\n";
+            boost::asio::ip::tcp::resolver::query query(hostname, portNum, boost::asio::ip::resolver_query_base::all_matching);
+        
+            boost::asio::ip::tcp::resolver::iterator iter = resolver.resolve(query);
+
+            boost::asio::ip::tcp::resolver::iterator end; // End marker.
+            while (iter != end){
+                boost::asio::ip::tcp::endpoint endpoint = *iter++;
+                // std::cout << "endpoint: " << endpoint << std::endl;
+            }
+
+            std::cout << "I WAS HERE" << std::endl;
+
+            boost::asio::ip::tcp::socket _socket_(io_backscreen_service);
+            bool connected_to_server = false;
+            while (!connected_to_server){
+                try{
+                    boost::asio::connect(_socket_, resolver.resolve(query));
+                    connected_to_server = true;
+                    std::cout << "connection with " << hostname << "@" << portNum << " established\n";
+                }
+                catch (...){
+                    connected_to_server = false;
+                    std::cout << "trying to connect with : " << hostname << "@" << portNum << "\n";
+                }
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
+            // boost::system::error_code lErrorCode;
+            // _socket_.close(lErrorCode);
+            // std::cout <<  lErrorCode.message() << std::endl;
+            //listen for new connection
+            // boost::asio::ip::tcp::acceptor acceptor_(io_service, backScreenEndpoint);
+            // boost::asio::ip::tcp::acceptor acceptor_(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), BACK_SCREEN_SERVER_PORT));
+            
+            while (true){
+                std::cout << "BEGINNING socketSendBackScreenWorker()" << std::endl;
+                std::unique_lock<std::mutex> locker(_sockLock);
+                
+                sendBackScreenData_conditionalVar.wait(locker);
+                
+                if(exitSocketSendDataWorkerFlag){
+                    break;
+                }
+                
+                _sendDataToPy(_socket_,_data2send);
+                locker.unlock();
+                
+                _receiveDataFromPy(_socket_);
+                if (!exitSocketSendDataWorkerFlag){
+                    backScreenDataSent_conditionalVar.notify_all();
+                }
+                std::cout << "END socketSendBackScreenWorker()" << std::endl;      
+            }
+            // std::terminate();
         }
         catch (...){
-            connected_to_server = false;
-            std::cout << "trying to connect with : " << hostname << "@" << portNum << "\n";
+            if(exitSocketSendDataWorkerFlag){
+                break;
+            }
+            std::this_thread::sleep_for(std::chrono::seconds(10));
+            std::cout << "\n\n "<< hostname << "@" << portNum << "not found, is server on RPI running?\n\n";
         }
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-    }
-    // boost::system::error_code lErrorCode;
-    // _socket_.close(lErrorCode);
-    // std::cout <<  lErrorCode.message() << std::endl;
-    //listen for new connection
-    // boost::asio::ip::tcp::acceptor acceptor_(io_service, backScreenEndpoint);
-    // boost::asio::ip::tcp::acceptor acceptor_(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), BACK_SCREEN_SERVER_PORT));
-    
-    while (true){
-        std::cout << "BEGINNING socketSendBackScreenWorker()" << std::endl;
-        std::unique_lock<std::mutex> locker(_sockLock);
-        
-        sendBackScreenData_conditionalVar.wait(locker);
-        
         if(exitSocketSendDataWorkerFlag){
             break;
         }
-        
-        _sendDataToPy(_socket_,_data2send);
-        locker.unlock();
-        
-        _receiveDataFromPy(_socket_);
-        if (!exitSocketSendDataWorkerFlag){
-            backScreenDataSent_conditionalVar.notify_all();
-        }
-        std::cout << "END socketSendBackScreenWorker()" << std::endl;      
+
     }
-    // std::terminate();
 }
 
 
@@ -298,6 +313,7 @@ std::string RoboSocket::_vec2str(const std::vector<vType> v){
     vStr = vStr.substr(0, vStr.length()-1);    
     return vStr; 
 }
+
 
 
 
