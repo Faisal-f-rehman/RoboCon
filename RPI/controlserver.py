@@ -5,7 +5,10 @@
 # from two clients on the PC. One for joint   #
 # angles and the second one for the game      #
 # fixture servo.                              #
-############################################### 
+###############################################
+##                    RPI                    ##
+###############################################
+ 
 
 import socket
 import queue
@@ -68,7 +71,7 @@ class ControlServer:
             # print(f"full_msg = {full_msg}, len(full_msg) = {len(full_msg)}, msglen = {msglen}, HEADER_SIZE = {HEADER_SIZE}, lenMsgLen = {lenMsgLen}")##
             #############################################################################################################################################
             
-            if (len(full_msg) >= msglen + HEADER_SIZE):     # Enter if message full message received (length received has reached expected length)
+            if (len(full_msg) >= msglen + HEADER_SIZE):     # Enter if full message received (i.e. length received has reached expected length)
                 try:
                     action = int(full_msg[HEADER_SIZE:])    # Extract the actual message
                     print("RoboCon Moving to column : {}".format(action))
