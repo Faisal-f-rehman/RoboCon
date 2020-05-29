@@ -1,3 +1,17 @@
+###############################################
+##      AUTHOR : FAISAL FAZAL-UR-REHMAN      ##
+###############################################
+'''
+RoboControl class:                                                                        
+This class inherits the MotorDriver class to drive the motors. Given x and y coordinates  
+it calculates straight-line trajectory with help of inverse kinematics to get arrays of   
+joint angles, which are then used to drive the motors to move the end-effector at the     
+desired location.
+''' 
+###############################################
+##                    RPI                    ##
+###############################################
+
 from motordriver import MotorDriver
 import matplotlib.pyplot as plt
 import math
@@ -5,22 +19,24 @@ from numpy import arange
 import time
 import queue
 
-SHUTDOWN_CODE = 147258
-CONST_R2D = 57.2957795131
-CONST_D2R = 0.01745329251
-TEST_IK = False
-TEST_TRAJ = False
-TRAJ_STEPS_BETWEEM_EACH_POINT = 120
-WRIST_TO_BOARD_HEIGHT = 35
+SHUTDOWN_CODE = 147258                  # This number is used through out the RoboCon software which tells each script to shutdown
+CONST_R2D = 57.2957795131               # degree = radians * 180 / pi, where 180 / pi = 57.2957795131 (10 dp)
+CONST_D2R = 0.01745329251               # radian = degrees * pi / 180, where pi / 180 = 0.01745329251 (10 dp)
+TEST_IK = False                         # used with the test scripts at the EOF, set true if testing IK
+TEST_TRAJ = False                       # used with the test scripts at the EOF, set true if testing trajectory
+TRAJ_STEPS_BETWEEM_EACH_POINT = 120     # this sets the resolution of the straight line trajectory, greater number slower speed more percision and vice versa
+WRIST_TO_BOARD_HEIGHT = 35              # defines the angle of the linear actuator when dropping a disc in the connect 4 game board
 
 class RoboControl(MotorDriver):
-#class RoboControl:    
     #------------------------------------------    
     #Constructor
     def __init__(self):
         MotorDriver.__init__(self)
-        self.L1 = 0.17996
-        self.L2 = 0.21085
+        #___link lengths, used in various places including for kinematics, if________# 
+        #   design of the links have changed then changing these will adjust the IK  #
+        self.L1 = 0.17996  # link between base and L2                                #
+        self.L2 = 0.21085  # link between L1 and end-effector                        #
+        #----------------------------------------------------------------------------#
         self.WORKSPACE = 0.39081
         self.JOINT_RANGE_MAX = 170
         self.JOINT_RANGE_MIN = 10
