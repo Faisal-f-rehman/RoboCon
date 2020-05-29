@@ -8,6 +8,8 @@
 // data from a client. The sockets are written  //
 // with Boost library.                          //
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+//                      PC                      //
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
 
 #ifndef __ROBOSOCKET__HPP
 #define __ROBOSOCKET__HPP
