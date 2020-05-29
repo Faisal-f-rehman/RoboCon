@@ -32,16 +32,23 @@ class RoboControl(MotorDriver):
     #Constructor
     def __init__(self):
         MotorDriver.__init__(self)
+        
         #___link lengths, used in various places including for kinematics, if________# 
         #   design of the links have changed then changing these will adjust the IK  #
         self.L1 = 0.17996  # link between base and L2                                #
         self.L2 = 0.21085  # link between L1 and end-effector                        #
         #----------------------------------------------------------------------------#
-        self.WORKSPACE = 0.39081
-        self.JOINT_RANGE_MAX = 170
-        self.JOINT_RANGE_MIN = 10
-        self.Q_BASE_ZERO_POS_ADJ = 45 * CONST_D2R
-        self.Q_ELBOW_ZERO_POS_ADJ = self.JOINT_RANGE_MAX * CONST_D2R
+
+        self.WORKSPACE = 0.39081    # defines the radius of the robot's workspace
+        self.JOINT_RANGE_MAX = 170  # upper limit revolte joint
+        self.JOINT_RANGE_MIN = 10   # lower limit revolte joint
+
+        #___home position joint angles for the base and elbow joints___#
+        self.Q_BASE_ZERO_POS_ADJ = 45 * CONST_D2R                      #
+        self.Q_ELBOW_ZERO_POS_ADJ = self.JOINT_RANGE_MAX * CONST_D2R   #
+        #--------------------------------------------------------------#
+
+        
         self.POS1 = [-0.218,0.202]
         self.POS2 = [-0.195,0.210]
         self.POS3 = [-0.150,0.225]
