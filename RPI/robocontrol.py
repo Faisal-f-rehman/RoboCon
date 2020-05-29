@@ -144,22 +144,6 @@ class RoboControl(MotorDriver):
             qElbow[i] = int(qElbow[i])
             qWrist[i] = int(qWrist[i])
             # print("{}\t trajX : {}\t trajY : {}\t qBase : {}\t qElbow : {}".format(i,trajX[i],trajY[i],qBase[i],qElbow[i]))
-        
-        
-#         if (qWrist >= qWs):
-#             distance = qWrist - qWs
-#             qWRes = int(distance / len(trajX))
-#             for i in range(qWrist,qWs,qWRes):
-#                 qWristTraj.append(i)
-#                 
-#         elif (qWrist < qWs):
-#             distance = qWs - qWrist
-#             qWRes = int(distance / len(trajX))
-#             for i in range(qWs,qWrist,qWRes):
-#                 qWristTraj.append(i)
-#         
-        
-#         self.curWrist_q = qWrist(len(qWrist)-1)
 
         return qBase, qElbow, qWrist
 
