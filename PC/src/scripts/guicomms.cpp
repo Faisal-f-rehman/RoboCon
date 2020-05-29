@@ -1,3 +1,14 @@
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+//                AUTHOR : FAISAL FAZAL-UR-REHMAN               //
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+// THIS WAS NOT DEVELOPED AS PART OF THIS PROJECT.              //
+//                                                              //
+// Please refer to the RoboCon (Vision) repository link below:  //
+// https://github.com/Faisal-f-rehman/10538828_RoboConVision    //
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+//                              PC                              //
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+
 #include "guicomms.h"
 
 GuiComms::GuiComms(){}

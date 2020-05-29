@@ -1,3 +1,15 @@
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+//                AUTHOR : FAISAL FAZAL-UR-REHMAN               //
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+// APART FROM PARTS OF THREAD ROUTINE THIS WAS NOT DEVELOPED AS //
+// PART OF THIS PROJECT.                                        //
+//                                                              //
+// Please refer to the RoboCon (Vision) repository link below:  //
+// https://github.com/Faisal-f-rehman/10538828_RoboConVision    //
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+//                              PC                              //
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//
+
 #ifndef VISION_H
 #define VISION_H
 
