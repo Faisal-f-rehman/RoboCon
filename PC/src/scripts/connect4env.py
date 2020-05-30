@@ -22,7 +22,7 @@ class Connect4:
         self._yellow_has_won = False
         self._draw = False
         self._done = False
-        self._total_moves_played = 0;
+        self._total_moves_played = 0
 
     #___convert coordinates to states, index for rows and cols start from 0
     def row_col_2_state(self, rows, cols):

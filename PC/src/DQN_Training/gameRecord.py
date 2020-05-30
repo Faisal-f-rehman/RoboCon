@@ -3,38 +3,39 @@ import numpy as np
 import time
 import sys
 
-FRAME_RATE = 3
-VIDEO_PATH = './TrainingVideos/'
+FRAME_RATE = 3                       # used to set the frame rate while exporting the video  
+VIDEO_PATH = './TrainingVideos/'     # file path to save the video
 
 class GameRecord():
-    def __init__(self,board_size=30):
-        self.BOX_SIZE = board_size # Row height and column width in pixels
-        self.BOX_CENTER = int(board_size*0.5)
-        self.ROWs = 6
-        self.COLs = 7
-        self.BOARD_SIZE = (self.BOX_SIZE*self.ROWs,self.BOX_SIZE*self.COLs,3)
-        self.LINE_COLOUR = (255,0,0)
+    def __init__(self,board_size=30):         
+        self.BOX_SIZE = board_size            # row height and column width in pixels
+        self.BOX_CENTER = int(board_size*0.5) # centre of a box in pixel (box: grid box around a single slot)
+        self.ROWs = 6                         # rows on connect 4 board used
+        self.COLs = 7                         # columns on connect 4 board used
+        self.BOARD_SIZE = (self.BOX_SIZE*self.ROWs,self.BOX_SIZE*self.COLs,3) # width and height of the board in pixels
+        self.LINE_COLOUR = (255,0,0)          # colour in BGR
         self.LINE_THICKNESS = 2
-
-        self.DISC_RADIUS = int(board_size*0.45)
-        self.RED_DISC_COLOUR = (0,0,255)
-        self.YELLOW_DISC_COLOUR = (0,255,255) # dont know yet
-        
+        self.DISC_RADIUS = int(board_size*0.45) # disc size in pixels
+        self.RED_DISC_COLOUR = (0,0,255)        # colour in BGR
+        self.YELLOW_DISC_COLOUR = (0,255,255) 
         self.reset()
+    #=======================================================================
+
 
     
-    #___
+    #___reset member variables
     def reset(self):
         #initiate image with black background
-        self.gameImg = np.zeros(self.BOARD_SIZE, dtype="uint8")
-        
-        self.gameVid = []
-        vid_height, vid_width, _ = self.gameImg.shape
+        self.gameImg = np.zeros(self.BOARD_SIZE, dtype="uint8")        
+        vid_height, vid_width, _ = self.gameImg.shape 
         self.vid_size = (vid_width,vid_height)
-
+        self.gameVid = []
         self._draw_Grid()
+    #=======================================================================
 
-    #___
+
+
+    #___draws the board on the image
     def _draw_Grid(self):
         for i in range(1,self.ROWs):
             #draw columns
@@ -44,66 +45,79 @@ class GameRecord():
 
         # draw last column
         self.gameImg = cv2.line(self.gameImg,(self.BOX_SIZE*self.ROWs,0),(self.BOX_SIZE*self.ROWs,self.BOX_SIZE*self.ROWs),self.LINE_COLOUR,self.LINE_THICKNESS)
+    #=======================================================================
     
-    
-    #___
+
+
+    #___destructor
     def __del__(self):
+        
+        # stitch images together and create a video
         out = cv2.VideoWriter(VIDEO_PATH+"trainingVideo.mp4",cv2.VideoWriter_fourcc('m','p','4','v'), FRAME_RATE, self.vid_size)
- 
+
+        #___export video
         for i in range(len(self.gameVid)):
             out.write(self.gameVid[i])
         out.release()
 
         print("\n\n>> TRAINING VIDEO SAVED <<\n")
+    #=======================================================================
 
 
-    #___
+
+    #___Triggered if user pressed ctrl+c to cancel training
     def signal_handler(self,sig, frame):
-        self.__del__()
+        self.__del__()  # call destructor
         # print("You pressed Ctrl+C: SAVING TRAINING VIDEO...")
         sys.exit(0)
+    #=======================================================================
     
 
-    #___
+
+    #___Stitches images and exports video
     def save_video(self,name):
+        
+        # stitch images together and create a video
         out = cv2.VideoWriter(VIDEO_PATH+name+".mp4",cv2.VideoWriter_fourcc('m','p','4','v'), FRAME_RATE, self.vid_size)
- 
+        
+        #___export video
         for i in range(len(self.gameVid)):
             out.write(self.gameVid[i])
         out.release()
 
         print("\n\n>> TRAINING VIDEO SAVED <<\n")
+    #=======================================================================
 
-    #___
+
+
+    #___creates image of the game with the updated state and stores in the the array
     def update_board(self,state):
-        self.gameImg = np.zeros(self.BOARD_SIZE, dtype="uint8")
-        self._draw_Grid()
+    
+        self.gameImg = np.zeros(self.BOARD_SIZE, dtype="uint8") # initiate image with black background
+        self._draw_Grid()                                       # draw the board
         
         for i in range(len(state)):
-            disc_location = self._disc_state2location(i)
-            if (state[i] == 1):
-                self._draw_disc("red",disc_location)
-                # print(f"^^ {i} ^^RED {state[i]}^^^^^")
-                # input()
-            elif (state[i] == 2):
-                self._draw_disc("yellow",disc_location)
-                # print(f"^^ {i} ^^YELLOW {state[i]}^^^^^")
-                # input()
+            disc_location = self._disc_state2location(i)        # convert state on the board to location in pixels
+            #___set disc colour, 1 red and 2 for yellow___#
+            if (state[i] == 1):                           #
+                self._draw_disc("red",disc_location)      #
+            elif (state[i] == 2):                         #
+                self._draw_disc("yellow",disc_location)   #
+
+        # up to this point the image is created with board upside down due to Y-axis starting from top
         self.gameImgFlipped = cv2.flip(self.gameImg,0)
 
         #---------------------------------------------#
-        self.gameVid.append(self.gameImgFlipped)
+        self.gameVid.append(self.gameImgFlipped) # store image in the list that is used to create the video at the end
 
-        # print(f"\nStates received for VID : {state}")        
-        # # time.sleep(1)
-        # cv2.imshow("Connect4",self.gameImgFlipped)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
-    
-    #___
+    #=======================================================================
+
+
+
+    #___called when the game is finished, it creates a result page, prints the winning colour and episode number  
     def gameFinished(self,episode,whoWonTheGame):
-        outroImg = np.zeros(self.BOARD_SIZE, dtype="uint8") #np.copy(self.gameImgFlipped)
-
+        #___image and text properties
+        outroImg = np.zeros(self.BOARD_SIZE, dtype="uint8") # initiate image with black background
         outroImgLoc = (self.BOX_CENTER, self.BOX_SIZE)
         outroImgFont = cv2.FONT_HERSHEY_SIMPLEX
         outroImgFontSize = (outroImg.shape[0] * outroImg.shape[1]) / (1000*130)
@@ -126,6 +140,9 @@ class GameRecord():
                 outroImg = cv2.putText(outroImg, f">> ITS A DRAW << EPISODE : {str(episode-1)}", outroImgLoc, outroImgFont, outroImgFontSize, outroImgFontColour, outroImgLineType)
         for i in range(3):
             self.gameVid.append(outroImg)
+    #=======================================================================
+
+
 
     #___
     def _draw_disc(self,discColour,discLocation):
@@ -136,6 +153,8 @@ class GameRecord():
             disc_colour = self.YELLOW_DISC_COLOUR
         
         cv2.circle(self.gameImg,discLocation,self.DISC_RADIUS,disc_colour,-1)
+    #=======================================================================
+
 
 
     #___
@@ -161,11 +180,15 @@ class GameRecord():
             print("disk location unknown")        
         
         return loc
+    #=======================================================================
+
 
 
     #___convert coordinates to states, index for state, rows and cols start from 0
     def row_col_2_state(self, rows, cols):
         return (rows * self.COLs) + cols
+    #=======================================================================
+
 
 
     #___convert states to coordinates, index for state, rows and cols start from 0
@@ -173,6 +196,10 @@ class GameRecord():
         col = state % self.COLs
         row = (state - col) / 7
         return int(row) , int(col)
+    #=======================================================================
+
+
+
 
 
 ##############################
