@@ -1,3 +1,19 @@
+################################################
+##      AUTHOR : FAISAL FAZAL-UR-REHMAN       ##
+################################################
+# GameRecord class:                            #
+# Written in python with OpenCV library, it is #
+# part of the RoboCon DQN training scripts. It # 
+# creates and stores images of DQN training    # 
+# session in the background without effecting  #
+# training speed. At the end of a training     #
+# session it stiches all the stored images     #
+# together and exports a video in the DQN      #
+# training directory.                          #
+################################################
+##                    PC                      ##
+################################################
+
 import cv2
 import numpy as np
 import time
@@ -108,7 +124,7 @@ class GameRecord():
         self.gameImgFlipped = cv2.flip(self.gameImg,0)
 
         #---------------------------------------------#
-        self.gameVid.append(self.gameImgFlipped) # store image in the list that is used to create the video at the end
+        self.gameVid.append(self.gameImgFlipped) # store / concatinate image in the list that is used to create the video at the end
 
     #=======================================================================
 
@@ -117,69 +133,72 @@ class GameRecord():
     #___called when the game is finished, it creates a result page, prints the winning colour and episode number  
     def gameFinished(self,episode,whoWonTheGame):
         #___image and text properties
-        outroImg = np.zeros(self.BOARD_SIZE, dtype="uint8") # initiate image with black background
-        outroImgLoc = (self.BOX_CENTER, self.BOX_SIZE)
-        outroImgFont = cv2.FONT_HERSHEY_SIMPLEX
-        outroImgFontSize = (outroImg.shape[0] * outroImg.shape[1]) / (1000*130)
-        outroImgFontColour = (255,255,255)
-        outroImgLineType = 1
+        outroImg = np.zeros(self.BOARD_SIZE, dtype="uint8")                     # initiate image with black background
+        outroImgLoc = (self.BOX_CENTER, self.BOX_SIZE)                          # text location
+        outroImgFont = cv2.FONT_HERSHEY_SIMPLEX                                 # text font
+        outroImgFontSize = (outroImg.shape[0] * outroImg.shape[1]) / (1000*130) # text size
+        outroImgFontColour = (255,255,255)                                      # text colour
+        outroImgLineType = 1                                                    # text thickness
 
-        if (episode == 1):
-            if (whoWonTheGame == 2):
+        #___create result page
+        if (episode == 1):  
+            if (whoWonTheGame == 2):    # red
                 outroImg = cv2.putText(outroImg, f">> RED WON << EPISODE : {str(episode)}", outroImgLoc, outroImgFont, outroImgFontSize, outroImgFontColour, outroImgLineType)
-            elif (whoWonTheGame == 1):
+            elif (whoWonTheGame == 1):  # yellow
                 outroImg = cv2.putText(outroImg, f">> YELLOW WON << EPISODE : {str(episode)}", outroImgLoc, outroImgFont, outroImgFontSize, outroImgFontColour, outroImgLineType)
-            elif (whoWonTheGame == 0):
+            elif (whoWonTheGame == 0):  # draw
                 outroImg = cv2.putText(outroImg, f">> ITS A DRAW << EPISODE : {str(episode)}", outroImgLoc, outroImgFont, outroImgFontSize, outroImgFontColour, outroImgLineType)
         else:
-            if (whoWonTheGame == 2):
+            if (whoWonTheGame == 2):    # red
                 outroImg = cv2.putText(outroImg, f">> RED WON << EPISODE : {str(episode-1)}", outroImgLoc, outroImgFont, outroImgFontSize, outroImgFontColour, outroImgLineType)
-            elif (whoWonTheGame == 1):
+            elif (whoWonTheGame == 1):  # yellow
                 outroImg = cv2.putText(outroImg, f">> YELLOW WON << EPISODE : {str(episode-1)}", outroImgLoc, outroImgFont, outroImgFontSize, outroImgFontColour, outroImgLineType)
-            elif (whoWonTheGame == 0):
+            elif (whoWonTheGame == 0):  # draw
                 outroImg = cv2.putText(outroImg, f">> ITS A DRAW << EPISODE : {str(episode-1)}", outroImgLoc, outroImgFont, outroImgFontSize, outroImgFontColour, outroImgLineType)
+        
+        #___concatinate result page 
         for i in range(3):
             self.gameVid.append(outroImg)
     #=======================================================================
 
 
 
-    #___
+    #___draws discs on the board, params : (discColour - "red" or "yellow") , (discLocation is centre of the circle : (x,y)) 
     def _draw_disc(self,discColour,discLocation):
-        disc_colour = (0,0,0)
-        if (discColour == "red"):
-            disc_colour = self.RED_DISC_COLOUR
-        elif (discColour == "yellow"):
+        disc_colour = (0,0,0)                       # initiate disc colour as black
+        if (discColour == "red"):                   # enter if red
+            disc_colour = self.RED_DISC_COLOUR      
+        elif (discColour == "yellow"):              # enter if yellow
             disc_colour = self.YELLOW_DISC_COLOUR
         
+        #___draw discc
         cv2.circle(self.gameImg,discLocation,self.DISC_RADIUS,disc_colour,-1)
     #=======================================================================
 
 
 
-    #___
+    #___converts state (connect 4 board states) to location on image in pixels (x,y)
     def _disc_state2location(self,stateNum):
     
-        row, col = self.state_2_row_col(stateNum)
-        # print(f"state: {stateNum}, row : {row}, col : {col}")
+        row, col = self.state_2_row_col(stateNum)   # convert state (1-42) to coordinate (row,col)
         
-        if (stateNum <= 0):
-            loc = (self.BOX_CENTER,self.BOX_CENTER)
+        if (stateNum <= 0):             # state = 0
+            loc = (self.BOX_CENTER, self.BOX_CENTER)
 
-        elif (stateNum < self.COLs):
-            loc = (self.BOX_CENTER+(stateNum*self.BOX_SIZE),self.BOX_CENTER)
+        elif (stateNum < self.COLs):    # bottom row (not state 0)
+            loc = (self.BOX_CENTER+(stateNum*self.BOX_SIZE), self.BOX_CENTER)
         
-        elif (col == 0):
-            loc = (self.BOX_CENTER,self.BOX_CENTER+(row*self.BOX_SIZE))
+        elif (col == 0):                # left most column (not bottom row or state 0)
+            loc = (self.BOX_CENTER, self.BOX_CENTER+(row*self.BOX_SIZE))
         
-        elif (col > 0):
-            loc = (self.BOX_CENTER+(col*self.BOX_SIZE),self.BOX_CENTER+(row*self.BOX_SIZE))
+        elif (col > 0):                 # columns 2 to 7 (not bottom row or state 0)
+            loc = (self.BOX_CENTER+(col*self.BOX_SIZE), self.BOX_CENTER+(row*self.BOX_SIZE))
         
-        else:
+        else:                           # something went wrong
             loc = (0,0)
             print("disk location unknown")        
         
-        return loc
+        return loc                      
     #=======================================================================
 
 
