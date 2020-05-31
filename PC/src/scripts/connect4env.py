@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
+
 ################################################
 ##      AUTHOR : FAISAL FAZAL-UR-REHMAN       ##
 ################################################
-#                   
+'''
+This file has two classes:-
+- Connect4 Class:
+    This class defines the connect 4 game rules, game status, player status and GUI of the game board
+
+- Connect4Env Class:
+    This class inherits the Connect4 class and provides a bridge between Deep Q Network and the Connect4 class.
+    This class is written similar to the OpenAI Gym Environments, so that it can be used with the Gym Library.    
+'''
 ################################################
 ##                    PC                      ##
 ################################################
@@ -99,7 +108,7 @@ class Connect4:
     def __game_won(self,is_red,state):
         
         state_row, state_col = self.state_2_row_col(state) # converts state to row and column
-        winFlag = False             # will be set to true if the a player has won the game      
+        #winFlag = False             # will be set to true if the a player has won the game      
         
         #___holds horizontal, vertical and diagonal
         #   states, above and below the action state 
@@ -388,7 +397,7 @@ class Connect4:
                 self._yellow_has_won = True        
                 self._done = True
 
-        # Finally check if its a draw_________________________________________#
+        # Finally check if its a draw_________________________________#
         if ((self._total_moves_played >= self._total_n_of_states) and #
              not self._red_has_won and not self._yellow_has_won):     #
             self._draw = True                                         #
@@ -613,7 +622,7 @@ class Connect4Env(Connect4):            # inherit Connect4 game class
                 if (board[board_i] == counter_against): # check if the board state is the same colour disc as counter_against     
                     for i in range(0,4):   # pan left and right for every opponent's disc found and add 1 to sum for every disc found  
                         _,col = Connect4.state_2_row_col(self,board_i-i)    
-                        if ((board[board_i-i] == 2) and (col >= 0) and (board_i-i >= 0)):
+                        if ((board[board_i-i] == counter_against) and (col >= 0) and (board_i-i >= 0)):
                             sum+=1
                     if (sum >= 3):         # if condition is satisfied, a counter move is available
                         if ((board_i < 41) and (board_i >= 2)): 
@@ -629,7 +638,6 @@ class Connect4Env(Connect4):            # inherit Connect4 game class
                     sum = 0
                 board_i += 1
               
-                
                 
 
         #><--><--><--><--><--><--><--><--><
