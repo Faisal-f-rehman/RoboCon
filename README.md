@@ -10,6 +10,7 @@ The software was developed on Linux Ubuntu 18.04 LTS (PC) and Raspbian (RPI) usi
 |Application / Library|	Version|
 | :---:               |  :---: |
 |    PC                        |
+|---------------------|--------|
 Cmake	3.5
 Python	3.6.9
 Tensorflow	1.15.0
