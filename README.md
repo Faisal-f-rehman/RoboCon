@@ -9,7 +9,7 @@ The software was developed on Linux Ubuntu 18.04 LTS (PC) and Raspbian (RPI) usi
 
 |Application / Library|	Version|
 | :---:               |  :---: |
-|    PC                        |
+|    **PC**                        |
 |------------------------------|
 |Cmake|	3.5|
 |Python|	3.6.9|
@@ -22,7 +22,7 @@ The software was developed on Linux Ubuntu 18.04 LTS (PC) and Raspbian (RPI) usi
 |Matplotlib	|3.2.1|
 |Boost (C++)	|1.65.1|
 |------------------------------|
-|Raspberry Pi|
+|**Raspberry Pi|**
 |------------------------------|
 |Python	|3.7.3|
 |adafruit-circuitpython-servokit*	|1.1.1|
