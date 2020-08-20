@@ -1,6 +1,6 @@
 # **RoboCon** - ***Gaming Robot***
 
-[![RoboCon](https://img.youtube.com/vi/zAyr8a5UKs0/0.jpg)](https://youtu.be/zAyr8a5UKs0?t=516)
+[![RoboCon](https://github.com/Faisal-f-rehman/crossDocs/blob/master/RoboCon/Pics/youtube_robocon.jpg?raw=true)](https://youtu.be/zAyr8a5UKs0?t=516)
 
 See full report [here](https://github.com/Faisal-f-rehman/RoboCon/blob/master/Docs/RoboCon_Report.pdf)
 <br>
