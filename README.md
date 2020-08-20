@@ -1,5 +1,7 @@
 # **RoboCon** - ***Gaming Robot***
 
+[![RoboCon](https://img.youtube.com/vi/zAyr8a5UKs0/0.jpg)](https://www.youtube.com/watch?v=zAyr8a5UKs0)
+
 <br>
 
 ------------------------------
