@@ -1,4 +1,4 @@
-# **RoboCon** - ***Gaming Robot***
+# **RoboCon** - ***Intelligent Gaming Robot***
 
 <br>
 
